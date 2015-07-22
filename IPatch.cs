@@ -1,0 +1,209 @@
+﻿using System;
+
+public enum PATCH_STATUS {
+	Enabled,
+	Disabled
+}
+
+public class Patch : IPatch {
+	string PatchName;
+	public IntPtr[] Address {get;}
+
+	public byte[][] EnabledBytes {get;}
+
+	public byte[][] DisabledBytes {get;}
+
+	public byte[] Size {get;}
+
+	public int AddressBlocks {get;}
+
+	public void PatchEnable() {
+		for (int x = 0; x < AddressBlocks; x++) {
+			Mem.WriteByteArray(Address[x], EnabledBytes[x]);
+		}
+		General.MainForm.SetStatus(PatchName + " is now enabled");
+	}
+	public void PatchDisable() {
+		for (int x = 0; x < AddressBlocks; x++) {
+			Mem.WriteByteArray(Address[x], DisabledBytes[x]);
+		}
+		General.MainForm.SetStatus(PatchName + " is now enabled");
+	}
+	public void PatchSwitch() {
+		if (PatchStatus() == PATCH_STATUS.Enabled)
+			PatchDisable();
+		else
+			PatchEnable();
+	}
+	public PATCH_STATUS PatchStatus() {
+		bool flag = true;
+		for (int x = 0; x < AddressBlocks; x++) {
+			if (!General.ByteCmp(Mem.ReadByteArray(Address[x], Size[x]), EnabledBytes[x])) {
+				flag = false;
+				break;
+			}
+		}
+		return flag ? PATCH_STATUS.Enabled : PATCH_STATUS.Disabled;
+	}
+	public void CPatchSwitch(string Arg) {
+		if (!string.IsNullOrEmpty(Arg)) {
+			if (Arg == "1" || Arg == "TRUE" || Arg == "ENABLED" || Arg == "ENABLE" || Arg == "E") {
+				PatchEnable();
+			} else if (Arg == "0" || Arg == "FALSE" || Arg == "DISABLED" || Arg == "DISABLE" || Arg == "D") {
+				PatchDisable();
+			} else {
+				General.MainForm.SetStatus("Syntax error");
+				return;
+			}
+			General.MainForm.SetStatus(PatchName + " is now " + (PatchStatus() == PATCH_STATUS.Enabled ? "Enabled" : "Disabled"));
+		} else
+			General.MainForm.SetStatus(PatchName + " is " + (PatchStatus() == PATCH_STATUS.Enabled ? "Enabled" : "Disabled"));
+	}
+	public Patch(IntPtr Address, byte[] EnabledBytes, byte[] DisabledBytes, byte Size, string PatchName) {
+		this.Address =			new[] { Address };
+		AddressBlocks =			1;
+		this.EnabledBytes =		new[] { EnabledBytes };
+		this.DisabledBytes =	new[] { DisabledBytes };
+		this.Size =				new[] { Size };
+		this.PatchName =		PatchName;
+	}
+
+	public Patch(IntPtr[] Address, byte[][] EnabledBytes, byte[][] DisabledBytes, byte[] Size, string PatchName) {
+		this.Address =			Address;
+		AddressBlocks =			Address.Length;
+		this.EnabledBytes =		EnabledBytes;
+		this.DisabledBytes =	DisabledBytes;
+		this.Size =				Size;
+		this.PatchName =		PatchName;
+	}
+}
+
+public interface IPatch {
+	byte[] Size {get;}
+	IntPtr[] Address {get;}
+	byte[][] EnabledBytes {get;}
+	byte[][] DisabledBytes {get;}
+	int AddressBlocks {get;}
+	void PatchEnable();
+	void PatchDisable();
+	void PatchSwitch();
+	PATCH_STATUS PatchStatus();
+}
+
+public struct ADDRESS_SPEC {
+	public MODE Mode;
+	public IntPtr Address;
+
+	public ADDRESS_SPEC(IntPtr Address, MODE Mode) {
+		this.Mode = Mode;
+		this.Address = Address;
+	}
+}
+
+public struct ADDRESS_SPEC_PTR {
+	public MODE Mode;
+	public IntPtr Address;
+	public int Offset;
+
+	public ADDRESS_SPEC_PTR(IntPtr Address, int Offset, MODE Mode) {
+		this.Mode = Mode;
+		this.Address = Address;
+		this.Offset = Offset;
+	}
+}
+
+public class Mod : IMod {
+	object _Address;
+	public bool VehicleOnly {get;}
+
+	public Type DataType {get;}
+
+	public string Name {get;}
+
+	public IntPtr Address {
+		get {
+			var specs = _Address as ADDRESS_SPEC[];
+			var specsPtr = _Address as ADDRESS_SPEC_PTR[];
+			if (specs != null) {
+				for (int x = 0; x < specs.Length; x++) {
+					if (specs[x].Mode == ADDRESSES.mode)
+						return specs[x].Address;
+				}
+			}
+			if (specsPtr != null) {
+				for (int x = 0; x < specsPtr.Length; x++) {
+					if (specsPtr[x].Mode == ADDRESSES.mode)
+						return Mem.PtrToAddr(specsPtr[x].Address, specsPtr[x].Offset);
+				}
+			}
+			return IntPtr.Zero;
+		}
+	}
+	public void Set(object Value) {
+		if (DataType == typeof(float))
+			Mem.WriteFloat(Address, Convert.ToSingle(Value));
+		else if (DataType == typeof(uint))
+			Mem.WriteUInt32(Address, Convert.ToUInt32(Value));
+		else if (DataType == typeof(int))
+			Mem.WriteInt32(Address, Convert.ToInt32(Value));
+		else if (DataType == typeof(bool))
+			Mem.WriteBoolean(Address, Convert.ToBoolean(Value));
+		else if (DataType == typeof(byte))
+			Mem.WriteByte(Address, Convert.ToByte(Value));
+		else
+			throw new NotImplementedException("Not implemented data type");
+	}
+	public object Get() {
+		if (DataType == typeof(float))
+			return Mem.ReadFloat(Address);
+		if (DataType == typeof(uint))
+			return Mem.ReadUInt32(Address);
+		if (DataType == typeof(int))
+			return Mem.ReadInt32(Address);
+		if (DataType == typeof(bool))
+			return Mem.ReadBoolean(Address);
+		if (DataType == typeof(byte))
+			return Mem.ReadByte(Address);
+		throw new NotImplementedException("Not implemented data type");
+    }
+
+	public Mod(ADDRESS_SPEC[] Address, Type DataType, string Name, bool VehicleOnly = false) {
+		_Address = Address;
+		this.DataType = DataType;
+		this.Name = Name;
+		this.VehicleOnly = VehicleOnly;
+	}
+
+	public Mod(ADDRESS_SPEC_PTR[] Address, Type DataType, string Name, bool VehicleOnly = false) {
+		_Address = Address;
+		this.DataType = DataType;
+		this.Name = Name;
+		this.VehicleOnly = VehicleOnly;
+	}
+
+	public void CModSet(string Arg) {
+		if (!string.IsNullOrEmpty(Arg)) {
+			if (Arg.ToUpper() == "INF") {
+				Set(Single.MaxValue);
+				General.MainForm.SetStatus(Name + " set to ∞");
+			} else {
+				Set(Single.Parse(Arg));
+				General.MainForm.SetStatus(Name + " set to " + Get());
+			}
+		} else {
+			if (Math.Abs((float)Get() - Single.MaxValue) < Single.Epsilon)
+				General.MainForm.SetStatus(Name + " is ∞");
+			else
+				General.MainForm.SetStatus(Name + " is " + Get());
+		}
+	}
+}
+
+public interface IMod {
+	IntPtr Address {get;}
+	Type DataType {get;}
+	string Name {get;}
+	bool VehicleOnly {get;}
+	void Set(object Value);
+	object Get();
+}
