@@ -27,7 +27,7 @@ public class Patch : IPatch {
 		for (int x = 0; x < AddressBlocks; x++) {
 			Mem.WriteByteArray(Address[x], DisabledBytes[x]);
 		}
-		General.MainForm.SetStatus(PatchName + " is now enabled");
+		General.MainForm.SetStatus(PatchName + " is now disabled");
 	}
 	public void PatchSwitch() {
 		if (PatchStatus() == PATCH_STATUS.Enabled)
@@ -49,13 +49,14 @@ public class Patch : IPatch {
 		if (!string.IsNullOrEmpty(Arg)) {
 			if (Arg == "1" || Arg == "TRUE" || Arg == "ENABLED" || Arg == "ENABLE" || Arg == "E") {
 				PatchEnable();
+				General.MainForm.SetStatus(PatchName + " is now enabled");
 			} else if (Arg == "0" || Arg == "FALSE" || Arg == "DISABLED" || Arg == "DISABLE" || Arg == "D") {
 				PatchDisable();
+				General.MainForm.SetStatus(PatchName + " is now disabled");
 			} else {
 				General.MainForm.SetStatus("Syntax error");
 				return;
 			}
-			General.MainForm.SetStatus(PatchName + " is now " + (PatchStatus() == PATCH_STATUS.Enabled ? "Enabled" : "Disabled"));
 		} else
 			General.MainForm.SetStatus(PatchName + " is " + (PatchStatus() == PATCH_STATUS.Enabled ? "Enabled" : "Disabled"));
 	}
