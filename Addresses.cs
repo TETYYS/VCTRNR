@@ -33,11 +33,7 @@ class ADDRESSES {
 	public const string CAR_SPAWN_STRING = "betterthanwalking";
 	public static readonly IntPtr PLAYER_CONTROLS_STRUCTURES = (IntPtr)0x7DBCB0;
 
-	public static bool IsInVehicle {
-		get {
-			return Mem.PtrToAddr(PLAYER.PlayerPointer, 0) != Mem.PtrToAddr(VEHICLE.VehiclePointer, 0);
-		}
-	}
+	public static bool IsInVehicle => Mem.PtrToAddr(PLAYER.PlayerPointer, 0) != Mem.PtrToAddr(VEHICLE.VehiclePointer, 0);
 	public static bool prevIsInVehicle = false;
 
 	public static void CSetMode(string Arg) {
@@ -86,7 +82,22 @@ class ADDRESSES {
 		//public static readonly IntPtr PLAYER_POINTER = (IntPtr)0x94AD28; //78F7E4
 		//0A0B1230
 		public static IntPtr PlayerPointerStandalone = (IntPtr)0x94AD28;
-		public static IntPtr PlayerPointerVCMP = (IntPtr)0x0078F85C;
+
+		/*
+		 * 007e4b8c
+		 * f48a294
+		 * f540210
+		 * f57b284
+		 * f57b2e4
+		 * f5891d0
+		 * f590f80
+		 * f5920b8
+		 * f5920c4
+		 * f5920d0
+		 * f5966ac
+		 * f5966b4
+		 */
+		public static IntPtr PlayerPointerVCMP = (IntPtr)(General.PATCH_BASE + 0x3E4B8C);
 
 		public static IntPtr PlayerPointer => mode == MODE.STANDALONE ? PlayerPointerStandalone : PlayerPointerVCMP;
 
@@ -108,9 +119,15 @@ class ADDRESSES {
 
 		// 0068F590 - speed multiplier
 		public static IntPtr VehiclePointerStandalone = (IntPtr)0x7E49C0;
-		public static IntPtr VehiclePointerVCMP = (IntPtr)0x0A5A2944;
 
-		public static IntPtr VehiclePointer => mode == MODE.STANDALONE ? (IntPtr)0x7E49C0 : (IntPtr)0x0A5A2944;
+		/*
+		 * 007e49c0
+		 * 007e4e94
+		 * 0f590ffc
+		 */
+		public static IntPtr VehiclePointerVCMP = (IntPtr)(General.PATCH_BASE + 0x3E49C0);
+
+		public static IntPtr VehiclePointer => mode == MODE.STANDALONE ? VehiclePointerStandalone : VehiclePointerVCMP;
 
 		public const int ROLL_X_OFFSET = 0x04; //float
 		public const int ROLL_Y_OFFSET = 0x08; //float

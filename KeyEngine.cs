@@ -279,7 +279,7 @@ class KeyEngine {
 		} else {
 			KeyTimeout.Reset();
 			KeyTimeout.Start();
-			if (!GetWindowTextRaw(GetForegroundWindow()).StartsWith("GTA: Vice City") || GetWindowTextRaw(GetForegroundWindow()) == "GTA: Vice City kodai") {
+			if (GetWindowTextRaw(GetForegroundWindow()) != "GTA: Vice City" && GetWindowTextRaw(GetForegroundWindow()) != "Vice City Multiplayer (GTA:VC)") {
 				DiscardKeys = true;
 				return;
 			}

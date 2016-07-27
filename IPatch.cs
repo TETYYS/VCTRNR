@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 
 public enum PATCH_STATUS {
 	Enabled,
@@ -137,6 +138,17 @@ public class Mod : IMod {
 						return Mem.PtrToAddr(specsPtr[x].Address, specsPtr[x].Offset);
 				}
 			}
+			try {
+				var spec1 = (ADDRESS_SPEC)(((object[])_Address)[0]);
+				var spec2 = (ADDRESS_SPEC_PTR)(((object[])_Address)[1]);
+
+				if (spec1.Mode == ADDRESSES.mode)
+					return spec1.Address;
+				if (spec2.Mode == ADDRESSES.mode)
+					return Mem.PtrToAddr(spec2.Address, spec2.Offset);
+			} catch {
+				return IntPtr.Zero;
+			}
 			return IntPtr.Zero;
 		}
 	}
@@ -177,6 +189,15 @@ public class Mod : IMod {
 
 	public Mod(ADDRESS_SPEC_PTR[] Address, Type DataType, string Name, bool VehicleOnly = false) {
 		_Address = Address;
+		this.DataType = DataType;
+		this.Name = Name;
+		this.VehicleOnly = VehicleOnly;
+	}
+
+	public Mod(ADDRESS_SPEC Address, ADDRESS_SPEC_PTR Address2, Type DataType, string Name, bool VehicleOnly = false) {
+		_Address = new object[2];
+		((object[])_Address)[0] = Address;
+		((object[])_Address)[1] = Address2;
 		this.DataType = DataType;
 		this.Name = Name;
 		this.VehicleOnly = VehicleOnly;

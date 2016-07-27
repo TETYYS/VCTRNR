@@ -11,10 +11,10 @@ namespace Mods {
 												},
 												typeof(float), "Health");
 
-		public static Mod VehicleHP = new Mod(new[]	{	new ADDRESS_SPEC_PTR(ADDRESSES.VEHICLE.VehiclePointerStandalone, 0x204, MODE.STANDALONE),
-														new ADDRESS_SPEC_PTR(ADDRESSES.VEHICLE.VehiclePointerVCMP, 0x204, MODE.VCMP)
+		public static Mod VehicleHP = new Mod(new[]	{	new ADDRESS_SPEC_PTR(ADDRESSES.VEHICLE.VehiclePointerVCMP, 0x204, MODE.VCMP),
+														new ADDRESS_SPEC_PTR(ADDRESSES.VEHICLE.VehiclePointerStandalone, 0x204, MODE.STANDALONE)
 													},
-												typeof(float), "Vehicle health");
+													typeof(float), "Vehicle health");
 
 		public static void Heal() {
 			//ptr = Mem.PtrToAddr(ADDRESES.PLAYER.PlayerPointer, ADDRESES.PLAYER.AP_OFFSET);
