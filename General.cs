@@ -59,7 +59,7 @@ class General {
 		KeyEngine.DiscardKeys = false;
 	}
 }
-class Vector {
+class Vec3 {
 	private float[] vec;
 
 	public float X {
@@ -76,61 +76,61 @@ class Vector {
 		set { vec[2] = value; }
 	}
 
-	public Vector(float X, float Y, float Z) {
+	public Vec3(float X, float Y, float Z) {
 		vec = new float[3];
 		this.X = X;
 		this.Y = Y;
 		this.Z = Z;
 	}
 
-	public Vector() {
+	public Vec3() {
 		vec = new float[3];
 		X = 0.0f;
 		Y = 0.0f;
 		Z = 0.0f;
 	}
 
-	public Vector(IntPtr Memory) {
+	public Vec3(IntPtr Memory) {
 		vec = new float[3];
 		X = Mem.ReadFloat(Memory);
 		Y = Mem.ReadFloat((IntPtr)(Memory.ToInt32() + sizeof(float)));
 		Z = Mem.ReadFloat((IntPtr)(Memory.ToInt32() + (sizeof(float) * 2)));
 	}
 
-	public static Vector operator +(Vector a, Vector b) {
-		Vector ret = new Vector();
+	public static Vec3 operator +(Vec3 a, Vec3 b) {
+		Vec3 ret = new Vec3();
 		ret.X = a.X + b.X;
 		ret.Y = a.Y + b.Y;
 		ret.Z = a.Z + b.Z;
 		return ret;
 	}
 
-	public static Vector operator -(Vector a, Vector b) {
-		Vector ret = new Vector();
+	public static Vec3 operator -(Vec3 a, Vec3 b) {
+		Vec3 ret = new Vec3();
 		ret.X = a.X - b.X;
 		ret.Y = a.Y - b.Y;
 		ret.Z = a.Z - b.Z;
 		return ret;
 	}
 
-	public static Vector operator *(Vector a, Vector b) {
-		Vector ret = new Vector();
+	public static Vec3 operator *(Vec3 a, Vec3 b) {
+		Vec3 ret = new Vec3();
 		ret.X = a.X * b.X;
 		ret.Y = a.Y * b.Y;
 		ret.Z = a.Z * b.Z;
 		return ret;
 	}
 
-	public static Vector operator *(Vector a, float b) {
-		Vector ret = new Vector();
+	public static Vec3 operator *(Vec3 a, float b) {
+		Vec3 ret = new Vec3();
 		ret.X = a.X * b;
 		ret.Y = a.Y * b;
 		ret.Z = a.Z * b;
 		return ret;
 	}
 
-	public static Vector operator /(Vector a, Vector b) {
-		Vector ret = new Vector();
+	public static Vec3 operator /(Vec3 a, Vec3 b) {
+		Vec3 ret = new Vec3();
 		ret.X = a.X / b.X;
 		ret.Y = a.Y / b.Y;
 		ret.Z = a.Z / b.Z;

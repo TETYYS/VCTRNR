@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Threading;
 
-using Coords = Vector;
-
 namespace Mods {
 	class VehiclePhys {
 		public struct VEHICLE_PHYS_STATE {
-			public Vector roll;
-			public Vector dir;
-			public Coords coords;
-			public Vector speed;
-			public Vector turn;
+			public Vec3 roll;
+			public Vec3 dir;
+			public Vec3 coords;
+			public Vec3 speed;
+			public Vec3 turn;
 		}
 
 		public static VEHICLE_PHYS_STATE VehicleGetPhysState(IntPtr VehiclePointer) {
 			var ret =		new VEHICLE_PHYS_STATE();
-			ret.coords =	new Coords(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.COORDS_X_OFFSET));
-			ret.dir =		new Vector(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.DIR_X_OFFSET));
-			ret.roll =		new Vector(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.ROLL_X_OFFSET));
-			ret.speed =		new Vector(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
-			ret.turn =		new Vector(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.TURN_X_OFFSET));
+			ret.coords =	new Vec3(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.COORDS_X_OFFSET));
+			ret.dir =		new Vec3(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.DIR_X_OFFSET));
+			ret.roll =		new Vec3(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.ROLL_X_OFFSET));
+			ret.speed =		new Vec3(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
+			ret.turn =		new Vec3(Mem.PtrToAddr(VehiclePointer, ADDRESSES.VEHICLE.TURN_X_OFFSET));
 			return ret;
 		}
 
@@ -88,7 +86,7 @@ namespace Mods {
 		// -1 1
 
 		public static void InstantStop() {
-			Vector speed = new Vector(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
+			Vec3 speed = new Vec3(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
 			speed *= 0;
 			speed.MemWrite(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
 		}
@@ -117,12 +115,12 @@ namespace Mods {
 			}
 		}
 
-		static Coords AutoMowerCoords;
+		static Vec3 AutoMowerCoords;
 		public static void AutoMowerSwitch() {
 			if (!ADDRESSES.IsInVehicle)
 				return;
 			if (!AutoMowerEnabled) {
-				AutoMowerCoords = new Vector(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.COORDS_X_OFFSET));
+				AutoMowerCoords = new Vec3(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.COORDS_X_OFFSET));
 				AutoMowerEnabled = true;
 			} else {
 				AutoMowerEnabled = false;
@@ -156,11 +154,11 @@ namespace Mods {
 		public static void SpeedBoost() {
 			if (!ADDRESSES.IsInVehicle)
 				return;
-			Vector speed = new Vector(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
+			Vec3 speed = new Vec3(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
 			if (Math.Abs(speed.X) < 0.01f && Math.Abs(speed.Y) < 0.01f) {
 				float dirX = Mem.ReadFloat(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.DIR_X_OFFSET));
 				float dirY = Mem.ReadFloat(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.DIR_Y_OFFSET));
-				//float angle = Vector.VecToAngle2D(dirX, dirY);
+				//float angle = Vec3.VecToAngle2D(dirX, dirY);
 				Mem.WriteFloat(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET), dirX * (float)Config.vehicleSpeedMultiplierSet.Value);
 				Mem.WriteFloat(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_Y_OFFSET), dirY * (float)Config.vehicleSpeedMultiplierSet.Value);
 			}
@@ -199,9 +197,9 @@ namespace Mods {
 				return;
 			General.MainForm.SetStatus("Forward teleport (" + DateTime.Now.Ticks + ")");
 
-			Vector roll = new Vector(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.ROLL_X_OFFSET));
-			Vector speed = new Vector(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
-			Coords coords = new Coords(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.COORDS_X_OFFSET));
+			Vec3 roll = new Vec3(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.ROLL_X_OFFSET));
+			Vec3 speed = new Vec3(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
+			Vec3 coords = new Vec3(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.COORDS_X_OFFSET));
 
 			General.MainForm.SetStatus("X: " + Math.Round(roll.X, 2) + ", Y: " + Math.Round(roll.Y, 2) + ", Z: " + Math.Round(roll.Z, 2) +
 								"// X: " + Math.Round(speed.X, 2) + ", Y: " + Math.Round(speed.Y, 2) + ", Z: " + Math.Round(speed.Z, 2));

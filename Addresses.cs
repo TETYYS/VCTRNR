@@ -74,8 +74,11 @@ class ADDRESSES {
 		}
 
 		public static readonly IntPtr CAMERA_X = (IntPtr)0x7E46B8; //float
-		public static readonly IntPtr CAMERA_Y = (IntPtr)0x7E46B8; //float
-		public static readonly IntPtr CAMERA_Z = (IntPtr)0x7E46B8; //float
+		public static readonly IntPtr CAMERA_Y = (IntPtr)0x7E46BC; //float
+		public static readonly IntPtr CAMERA_Z = (IntPtr)0x7E46C0; //float
+
+		public static readonly IntPtr CAMERA_Z_ROT = (IntPtr)0x7E48CC;
+		public static readonly IntPtr CAMERA_X_ROT = (IntPtr)0x7E48BC;
 	}
 
 	public class PLAYER {

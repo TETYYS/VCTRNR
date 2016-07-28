@@ -93,6 +93,7 @@ class Config {
 	public static ConfigVar vehicleSpeedMultiplierSet = new ConfigVar(2.0f, "VehicleSpeedMultiplierSet");
 	public static ConfigVar autoMowerLockAxis = new ConfigVar("", "LockAutoMowerAxis");
 	public static ConfigVar jetPackSpeed = new ConfigVar(1.0f, "JetPack speed");
+	public static ConfigVar jetPackCtlEnableZ = new ConfigVar(false, "JetPack Control enable Z axis");
 
 	public static void LoadGlobalConfig() {
 		string[] cfg = File.ReadAllLines(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\cfg.ini");

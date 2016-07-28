@@ -67,6 +67,8 @@ class CommandEngine {
 			Arg => Guns.FastShoot.CPatchSwitch(Arg)),
 		new COMMAND("HUD",
 			Arg => Game.HUD.CModSet(Arg)),
+		new COMMAND("JETPACKCTLENABLEZ",
+			Arg => Config.jetPackCtlEnableZ.ConfigVariableSet(Arg)),
 	};
 
 	public static void Parse(string Command) {
