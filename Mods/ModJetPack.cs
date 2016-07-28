@@ -101,6 +101,10 @@ namespace Mods {
 
 				Mem.WriteFloat(xAddr, xVal * jetPackSpeed);
 				Mem.WriteFloat(yAddr, yVal * jetPackSpeed);*/
+				/*
+				 0x7E48BC - [float] - player's up/down angle
+0x7E48CC - [float] - player's left/right angle
+				 */
 				IntPtr ptr = ADDRESSES.IsInVehicle ? ADDRESSES.VEHICLE.VehiclePointer : ADDRESSES.PLAYER.PlayerPointer;
 				float rot = Mem.ReadFloat(Mem.PtrToAddr(ptr, ADDRESSES.IsInVehicle ? ADDRESSES.VEHICLE.ROLL_Z_OFFSET : ADDRESSES.PLAYER.ROTATION_OFFSET));
 				float xVal = 0.0f, yVal = 0.0f;
