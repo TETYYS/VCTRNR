@@ -1,5 +1,5 @@
 ﻿using System;
-using System.CodeDom;
+using static General;
 
 public enum PATCH_STATUS {
 	Enabled,
@@ -8,7 +8,9 @@ public enum PATCH_STATUS {
 
 public class Patch : IPatch {
 	string PatchName;
-	public IntPtr[] Address {get;}
+
+	public MODULE Module {get;}
+	public int[] Offsets {get;}
 
 	public byte[][] EnabledBytes {get;}
 
@@ -19,16 +21,20 @@ public class Patch : IPatch {
 	public int AddressBlocks {get;}
 
 	public void PatchEnable() {
-		for (int x = 0; x < AddressBlocks; x++) {
-			Mem.WriteByteArray(Address[x], EnabledBytes[x]);
+		if (Module == MODULE.VCMP && VCMP_BASE == 0) {
+			MainForm.SetStatus(PatchName + " failed. No VCMP module base.");
+			return;
 		}
-		General.MainForm.SetStatus(PatchName + " is now enabled");
+		for (int x = 0; x < AddressBlocks; x++)
+			Mem.WriteByteArray((IntPtr)((Module == MODULE.VC ? VC_BASE : VCMP_BASE) + Offsets[x]), EnabledBytes[x]);
+
+		MainForm.SetStatus(PatchName + " is now enabled");
 	}
 	public void PatchDisable() {
 		for (int x = 0; x < AddressBlocks; x++) {
-			Mem.WriteByteArray(Address[x], DisabledBytes[x]);
+			Mem.WriteByteArray((IntPtr)((Module == MODULE.VC ? VC_BASE : VCMP_BASE) + Offsets[x]), DisabledBytes[x]);
 		}
-		General.MainForm.SetStatus(PatchName + " is now disabled");
+		MainForm.SetStatus(PatchName + " is now disabled");
 	}
 	public void PatchSwitch() {
 		if (PatchStatus() == PATCH_STATUS.Enabled)
@@ -39,7 +45,7 @@ public class Patch : IPatch {
 	public PATCH_STATUS PatchStatus() {
 		bool flag = true;
 		for (int x = 0; x < AddressBlocks; x++) {
-			if (!General.ByteCmp(Mem.ReadByteArray(Address[x], Size[x]), EnabledBytes[x])) {
+			if (!ByteCmp(Mem.ReadByteArray((IntPtr)(Module == MODULE.VC ? VC_BASE : VCMP_BASE + Offsets[x]), Size[x]), EnabledBytes[x])) {
 				flag = false;
 				break;
 			}
@@ -50,19 +56,18 @@ public class Patch : IPatch {
 		if (!string.IsNullOrEmpty(Arg)) {
 			if (Arg == "1" || Arg == "TRUE" || Arg == "ENABLED" || Arg == "ENABLE" || Arg == "E") {
 				PatchEnable();
-				General.MainForm.SetStatus(PatchName + " is now enabled");
+				MainForm.SetStatus(PatchName + " is now enabled");
 			} else if (Arg == "0" || Arg == "FALSE" || Arg == "DISABLED" || Arg == "DISABLE" || Arg == "D") {
 				PatchDisable();
-				General.MainForm.SetStatus(PatchName + " is now disabled");
-			} else {
-				General.MainForm.SetStatus("Syntax error");
-				return;
-			}
+				MainForm.SetStatus(PatchName + " is now disabled");
+			} else
+				MainForm.SetStatus("Syntax error");
 		} else
-			General.MainForm.SetStatus(PatchName + " is " + (PatchStatus() == PATCH_STATUS.Enabled ? "Enabled" : "Disabled"));
+			MainForm.SetStatus(PatchName + " is " + (PatchStatus() == PATCH_STATUS.Enabled ? "Enabled" : "Disabled"));
 	}
-	public Patch(IntPtr Address, byte[] EnabledBytes, byte[] DisabledBytes, byte Size, string PatchName) {
-		this.Address =			new[] { Address };
+	public Patch(MODULE Module, int Offset, byte[] EnabledBytes, byte[] DisabledBytes, byte Size, string PatchName) {
+		this.Module =			Module;
+		this.Offsets =			new[] { Offset };
 		AddressBlocks =			1;
 		this.EnabledBytes =		new[] { EnabledBytes };
 		this.DisabledBytes =	new[] { DisabledBytes };
@@ -70,9 +75,10 @@ public class Patch : IPatch {
 		this.PatchName =		PatchName;
 	}
 
-	public Patch(IntPtr[] Address, byte[][] EnabledBytes, byte[][] DisabledBytes, byte[] Size, string PatchName) {
-		this.Address =			Address;
-		AddressBlocks =			Address.Length;
+	public Patch(MODULE Module, int[] Offsets, byte[][] EnabledBytes, byte[][] DisabledBytes, byte[] Size, string PatchName) {
+		this.Module =           Module;
+		this.Offsets =          Offsets;
+		AddressBlocks =         Offsets.Length;
 		this.EnabledBytes =		EnabledBytes;
 		this.DisabledBytes =	DisabledBytes;
 		this.Size =				Size;
@@ -82,7 +88,8 @@ public class Patch : IPatch {
 
 public interface IPatch {
 	byte[] Size {get;}
-	IntPtr[] Address {get;}
+	MODULE Module {get;}
+	int[] Offsets {get;}
 	byte[][] EnabledBytes {get;}
 	byte[][] DisabledBytes {get;}
 	int AddressBlocks {get;}

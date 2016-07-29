@@ -19,9 +19,9 @@ namespace GTA_Vice_City_kodai {
 			InitializeComponent();
 		}
 
-		private void TestForm_Load(object sender, EventArgs e) {
+		private void Form_Load(object sender, EventArgs e) {
 			General.MainForm = this;
-			Text = "GTA: Vice City kodai (v" + Assembly.GetExecutingAssembly().GetName().Version + ")";
+			Text = "GTA: Vice City cheat codes (v" + Assembly.GetExecutingAssembly().GetName().Version + ")";
 			Mem.init("gta-vc");
 			if (!Mem.CheckProcess()) {
 				t_status.Text = "GTA VC not found! Type \"Refresh\" when ready.";

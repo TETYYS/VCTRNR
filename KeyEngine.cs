@@ -296,6 +296,7 @@ class KeyEngine {
 				case VirtualKeys.RightControl:
 				case VirtualKeys.LeftControl:
 					KeyCtrl = true;
+					Guns.EnableFastShoot();
 					break;
 				case VirtualKeys.RightShift:
 				case VirtualKeys.LeftShift:
@@ -391,9 +392,12 @@ class KeyEngine {
 		}
 		if (KeyPressType == KEY_PRESS_TYPE.KEY_UP) {
 			switch (keyCode) {
+				case VirtualKeys.RightControl:
 				case VirtualKeys.LeftControl:
 					KeyCtrl = false;
+					Guns.DisableFastShoot();
 					break;
+				case VirtualKeys.RightShift:
 				case VirtualKeys.LeftShift:
 					KeyShift = false;
 					break;

@@ -44,6 +44,14 @@ public class Mem {
 				return false;
 			try {
 				processHandle = mainProcess.Handle;
+				var modules = mainProcess.Modules;
+				foreach (ProcessModule m in modules) {
+					if (m.ModuleName == "vcmp-game.dll") {
+						General.VCMP_BASE = (uint)m.BaseAddress;
+						General.MainForm.SetStatus("VCMP_BASE: " + General.VCMP_BASE);
+						break;
+					}
+				}
 			} catch {
 				return false;
 			}

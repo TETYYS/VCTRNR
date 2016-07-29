@@ -3,6 +3,25 @@ using System.Threading;
 
 namespace Mods {
 	class VehiclePhys {
+
+		public static Patch FallingOffBike = new Patch(
+			MODULE.VC, 0x21393D,
+			new byte[] { 0xE9, 0xBC, 0x0E, 0x00, 0x00, 0x90 },
+			new byte[] { 0x0F, 0x84, 0xBB, 0x0E, 0x00, 0x90 },
+			6, "No falling off the bike");
+
+		public static Patch DisableExplosions = new Patch(
+			MODULE.VC, 0x188A77,
+			new byte[] { 0x90, 0x90 },
+			new byte[] { 0x75, 0x09 },
+			2, "Disable vehicle explosions");
+
+		public static Patch DriveOnWater = new Patch(
+			MODULE.VC, 0x193908,
+			new byte[] { 0x90, 0x90 },
+			new byte[] { 0x74, 0x07 },
+			2, "Drive on water");
+
 		public struct VEHICLE_PHYS_STATE {
 			public Vec3 roll;
 			public Vec3 dir;
@@ -189,7 +208,6 @@ namespace Mods {
 			General.KeyPress("bigbang");
 		}
 
-		public static Patch FallingOffBike = new Patch((IntPtr)(General.PATCH_BASE + 0x21393D), new byte[] { 0xE9, 0xBC, 0x0E, 0x00, 0x00, 0x90 }, new byte[] { 0x0F, 0x84, 0xBB, 0x0E, 0x00, 0x90 }, 6, "No falling off the bike");
 		//Mem.WriteByte(Mem.PtrToAddr(ADDRESES.PLAYER.PlayerPointer, 0x244), 0x01);
 
 		public static void ForwardTeleport() {
@@ -235,9 +253,5 @@ namespace Mods {
 					General.MainForm.SetStatus("Vehicle weight is " + Weight.Get());
 			}
 		}
-
-		public static Patch DisableExplosions = new Patch((IntPtr)(General.PATCH_BASE + 0x188A77), new byte[] { 0x90, 0x90 }, new byte[] { 0x75, 0x09 }, 2, "Disable vehicle explosions");
-
-		public static Patch DriveOnWater = new Patch((IntPtr)(General.PATCH_BASE + 0x193908), new byte[] { 0x90, 0x90 }, new byte[] { 0x74, 0x07 }, 2, "Drive on water");
 	}
 }

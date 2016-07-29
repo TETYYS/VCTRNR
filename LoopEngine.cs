@@ -9,7 +9,7 @@ class LoopEngine {
 	}
 
 	public static void FxRemove(Action Fx) {
-		FxTable.Remove(Fx);
+		FxTable.RemoveAll((f => f.Equals(Fx)));
 	}
 
 	public static void Start() {
@@ -18,7 +18,8 @@ class LoopEngine {
 	static void MainLoop() {
 		while (true) {
 			for (int x = 0; x < FxTable.Count; x++) {
-				FxTable[x].Invoke();
+				if (FxTable[x] != null)
+					FxTable[x].Invoke();
 			}
 
 

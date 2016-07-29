@@ -19,6 +19,9 @@ namespace Mods {
 														new ADDRESS_SPEC_PTR(ADDRESSES.PLAYER.PlayerPointerVCMP, 0x600, MODE.VCMP),
 		                                           }, typeof(float), "Player stamina");
 
-		public static Patch InfiniteRun = new Patch((IntPtr)(PATCH_BASE + 0x136F25), new byte[] { 0xEB }, new byte[] { 0x75 }, 1, "Infinite run");
+		public static Patch InfiniteRun = new Patch(
+			MODULE.VC, 0x136F25,
+			new byte[] { 0xEB },
+			new byte[] { 0x75 }, 1, "Infinite run");
 	}
 }

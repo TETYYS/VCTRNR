@@ -10,7 +10,8 @@ using MouseKeyboardLibrary;
 class General {
 
 	public static Main MainForm;
-	public static readonly uint PATCH_BASE = 0x400000;
+	public static readonly uint VC_BASE = 0x400000;
+	public static uint VCMP_BASE;
 	public const float PI = (float)Math.PI;
 	public const float HALF_PI = PI / 2;
 

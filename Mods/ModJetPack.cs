@@ -3,10 +3,11 @@ using static General; // dog bless
 
 namespace Mods {
 	class JetPack {
-		static Patch GravityDisable = new Patch(	(IntPtr)(PATCH_BASE + 0xBA953),
-													new byte[] { 0x74 },
-													new byte[] { 0xEB },
-													1, "Gravity disable" );
+		static Patch GravityDisable = new Patch(
+			MODULE.VC, 0xBA953,
+			new byte[] { 0x74 },
+			new byte[] { 0xEB },
+			1, "Gravity disable");
 
 		static Mod Gravity = new Mod(new [] {	new ADDRESS_SPEC((IntPtr)0x68F5F0, MODE.STANDALONE),
 												new ADDRESS_SPEC((IntPtr)0x68F5F0, MODE.VCMP)

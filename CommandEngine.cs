@@ -59,16 +59,12 @@ class CommandEngine {
 			Arg => VehiclePhys.DisableExplosions.CPatchSwitch(Arg)),
 		new COMMAND("DRIVEONWATER",
 			Arg => VehiclePhys.DriveOnWater.CPatchSwitch(Arg)),
-		new COMMAND("NORELOAD",
-			Arg => Guns.NoReload.CPatchSwitch(Arg)),
-		new COMMAND("FASTSHOOT",
-			Arg => Guns.FastShoot.CPatchSwitch(Arg)),
-		new COMMAND("FASTSHOOT",
-			Arg => Guns.FastShoot.CPatchSwitch(Arg)),
 		new COMMAND("HUD",
 			Arg => Game.HUD.CModSet(Arg)),
 		new COMMAND("JETPACKCTLENABLEZ",
 			Arg => Config.jetPackCtlEnableZ.ConfigVariableSet(Arg)),
+		new COMMAND("INFINITEAMMO",
+			Arg => Guns.InfiniteAmmo.CPatchSwitch(Arg)),
 	};
 
 	public static void Parse(string Command) {

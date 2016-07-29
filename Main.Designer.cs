@@ -80,7 +80,7 @@
 			this.Name = "Main";
 			this.Text = "GTA: Vice City cheat codes";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
-			this.Load += new System.EventHandler(this.TestForm_Load);
+			this.Load += new System.EventHandler(this.Form_Load);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);

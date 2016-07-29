@@ -24,6 +24,11 @@ public enum MODE {
 	VCMP = 1,
 	MODE_MAX = 2
 }
+
+public enum MODULE {
+	VC = 0,
+	VCMP = 1
+}
 class ADDRESSES {
 	public static MODE mode = MODE.STANDALONE;
 
@@ -100,7 +105,7 @@ class ADDRESSES {
 		 * f5966ac
 		 * f5966b4
 		 */
-		public static IntPtr PlayerPointerVCMP = (IntPtr)(General.PATCH_BASE + 0x3E4B8C);
+		public static IntPtr PlayerPointerVCMP = (IntPtr)(General.VC_BASE + 0x3E4B8C);
 
 		public static IntPtr PlayerPointer => mode == MODE.STANDALONE ? PlayerPointerStandalone : PlayerPointerVCMP;
 
@@ -116,6 +121,34 @@ class ADDRESSES {
 		public const int IS_ON_GROUND = 0xE4; //DWORD  65536/0
 		public const int ADRENALINE_DURATION_OFFSET = 0x634; //DWORD
 		public const int ADRENALINE_OFFSET = 0x63B; //byte 1/0
+
+		public const int STATE_OFFSET = 0x244; //DWORD
+		public enum STATES : uint {
+			NORMAL_ON_FOOT = 0x01,
+			WALKING = 0x07,
+			FIRST_PERSON_AIMING = 0x0C,
+			RUNNING_PUNCHING = 0x10,
+			ATTACK_WTH_ANY_WEAPONS = 0x10,
+			STANDING_PUNCHING = 0x11,
+			STANDING_GETTING_PUNCHED = 0x11,
+			LIFTING_PHONE = 0x13,
+			AUTOAIM = 0x16,
+			RUNNING_TO_ENTER_VEHICLE = 0x18,
+			WEAK_DODGE = 0x1F,
+			ANSWERING_MOBILE = 0x24,
+			JUMPING = 0x29,
+			LAYING_ONTO_GROUND = 0x2A,
+			GETTING_BACK_UP = 0x2B,
+			DODGE_CAR = 0x2D,
+			SITTING_IN_VEHICLE = 0x32,
+			DEATH_BEFORE_WASTED_SCREEN = 0x36,
+			WASTED_SCREEN = 0x37,
+			CAR_JACK = 0x38,
+			GETTING_CAR_JACKED = 0x39,
+			ENTERING_VEHICLE = 0x3A,
+			EXITING_VEHICLE = 0x3C,
+			BUSTED = 0x3E
+		}
 	}
 
 	public class VEHICLE {
@@ -128,7 +161,7 @@ class ADDRESSES {
 		 * 007e4e94
 		 * 0f590ffc
 		 */
-		public static IntPtr VehiclePointerVCMP = (IntPtr)(General.PATCH_BASE + 0x3E49C0);
+		public static IntPtr VehiclePointerVCMP = (IntPtr)(General.VC_BASE + 0x3E49C0);
 
 		public static IntPtr VehiclePointer => mode == MODE.STANDALONE ? VehiclePointerStandalone : VehiclePointerVCMP;
 
