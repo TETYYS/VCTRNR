@@ -177,7 +177,6 @@ namespace Mods {
 			if (Math.Abs(speed.X) < 0.01f && Math.Abs(speed.Y) < 0.01f) {
 				float dirX = Mem.ReadFloat(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.DIR_X_OFFSET));
 				float dirY = Mem.ReadFloat(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.DIR_Y_OFFSET));
-				//float angle = Vec3.VecToAngle2D(dirX, dirY);
 				Mem.WriteFloat(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET), dirX * (float)Config.vehicleSpeedMultiplierSet.Value);
 				Mem.WriteFloat(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_Y_OFFSET), dirY * (float)Config.vehicleSpeedMultiplierSet.Value);
 			}
@@ -185,20 +184,26 @@ namespace Mods {
 			speed.MemWrite(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
 		}
 
-		public static void Destroy() {
+		public static void Bash() {
 			if (!ADDRESSES.IsInVehicle)
 				return;
 			var vState = VehicleGetPhysState(ADDRESSES.VEHICLE.VehiclePointer);
+			var speed = new Vec3(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
 			var cState = ADDRESSES.DISPLAY.CameraGetState();
+			Vec3 speedOrig = new Vec3(speed.X, speed.Y, speed.Z);
 
-			vState.speed *= 1000;
-			vState.speed.MemWrite(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
+			var nSpeed = speed;
+			nSpeed.Normalize();
+			speed = nSpeed * 25;
+			speed.MemWrite(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
 
-			Thread.Sleep(100);
+			Thread.Sleep(200);
 
-			VehicleSetPhysState(ADDRESSES.VEHICLE.VehiclePointer, vState);
-			Thread.Sleep(10);
-			VehicleSetPhysState(ADDRESSES.VEHICLE.VehiclePointer, vState);
+			for (int x = 0; x < 3; x++) {
+				VehicleSetPhysState(ADDRESSES.VEHICLE.VehiclePointer, vState);
+				speedOrig.MemWrite(Mem.PtrToAddr(ADDRESSES.VEHICLE.VehiclePointer, ADDRESSES.VEHICLE.SPEED_X_OFFSET));
+				Thread.Sleep(50);
+			}
 			ADDRESSES.DISPLAY.CameraSetState(cState);
 		}
 

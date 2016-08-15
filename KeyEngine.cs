@@ -293,10 +293,12 @@ class KeyEngine {
 
 		if (KeyPressType == KEY_PRESS_TYPE.KEY_DOWN) {
 			switch (keyCode) {
+				case VirtualKeys.B:
+					Guns.EnableFastShoot();
+					break;
 				case VirtualKeys.RightControl:
 				case VirtualKeys.LeftControl:
 					KeyCtrl = true;
-					Guns.EnableFastShoot();
 					break;
 				case VirtualKeys.RightShift:
 				case VirtualKeys.LeftShift:
@@ -367,7 +369,7 @@ class KeyEngine {
 					break;
 				case VirtualKeys.Numpad7:
 					if (KeyCtrl)
-						VehiclePhys.Destroy();
+						VehiclePhys.Bash();
 					else
 						VehiclePhys.SpeedBoost();
 					break;
@@ -395,7 +397,6 @@ class KeyEngine {
 				case VirtualKeys.RightControl:
 				case VirtualKeys.LeftControl:
 					KeyCtrl = false;
-					Guns.DisableFastShoot();
 					break;
 				case VirtualKeys.RightShift:
 				case VirtualKeys.LeftShift:
@@ -419,7 +420,10 @@ class KeyEngine {
 						}
 					}
 					break;
-					#endregion Jetpack
+				#endregion Jetpack
+				case VirtualKeys.B:
+					Guns.DisableFastShoot();
+					break;
 			}
 		}
 	}
